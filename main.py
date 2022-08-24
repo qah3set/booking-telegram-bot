@@ -11,6 +11,7 @@ def start(update: Update, context: CallbackContext) -> None:
 
 def main() -> None:
     token = Token().get()
+    
     updater = Updater(token)
     updater.dispatcher.add_handler(CommandHandler("start", start))
     updater.start_polling()
