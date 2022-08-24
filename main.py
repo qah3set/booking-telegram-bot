@@ -1,6 +1,6 @@
 import telebot
 from telebot import types
-from Token import Token
+from src.Token import Token
 
 token = Token().get()
 bot = telebot.TeleBot(token)
