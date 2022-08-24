@@ -2,10 +2,8 @@ import telebot
 from telebot import types
 from Token import Token
 
-
 token = Token().get()
 bot = telebot.TeleBot(token)
-
 
 @bot.message_handler(commands=['start'])
 def welcome(message):
