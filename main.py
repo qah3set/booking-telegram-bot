@@ -1,7 +1,6 @@
-
 from telegram import Update, ParseMode
 from telegram.ext import Updater, CommandHandler, CallbackContext
-import json
+from Token import Token
 
 def start(update: Update, context: CallbackContext) -> None:
     chat_id = str(update.message.chat_id)
@@ -11,11 +10,12 @@ def start(update: Update, context: CallbackContext) -> None:
         return
 
 def main() -> None:
-    token = json.loads('/config/bot.json')['key']
+    token = Token().get()
     updater = Updater(token)
     updater.dispatcher.add_handler(CommandHandler("start", start))
     updater.start_polling()
     updater.idle()
+
 
 if __name__ == '__main__':
     main()
