@@ -2,11 +2,10 @@ import json
 import os 
 
 class Token:
-    TOKEN_PATH = r'/config/bot.json'
+    TOKEN_PATH = os.path.dirname(os.path.realpath(__file__)) + r'/config/bot.json'
     
     def __init__(self) -> None:
-        path = os.path.dirname(os.path.realpath(__file__))
-        file = open(path + self.TOKEN_PATH, 'r')
+        file = open(self.TOKEN_PATH, 'r')
         self.contents = file.read()
         file.close()
     
