@@ -1,9 +1,10 @@
 import psycopg2
 import json
+import os
 
 
 class Database:
-    CONFIG_PATH = r'./config/database.json'
+    CONFIG_PATH = os.path.dirname(os.path.realpath(__file__)) + r'/config/database.json'
     
     def __init__(self) -> None:
         file = open(self.CONFIG_PATH, 'r')
