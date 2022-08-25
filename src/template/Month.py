@@ -14,5 +14,3 @@ class Month(enum.Enum):
     October = 'Октябрь'
     November = 'Ноябрь'
     December = 'Декабрь'
-    
-    
