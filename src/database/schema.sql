@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS bookings;
+
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     instagram_nickname VARCHAR,
