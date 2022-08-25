@@ -5,6 +5,7 @@ from src.Token import Token
 token = Token().get()
 bot = telebot.TeleBot(token)
 
+
 @bot.message_handler(commands=['start'])
 def welcome(message):
     mesg = bot.send_message(message.chat.id,'Привет, {0.first_name}! Для дальнейшей работы с ботом сообщите ваш ник-нейм в instagram ⬇️'.format(message.from_user))
@@ -84,4 +85,6 @@ def bot_message(message):
             bot.send_message(message.chat.id, 'Выберите удобный для вас день')
 
 
+
 bot.infinity_polling()
+
