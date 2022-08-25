@@ -20,18 +20,14 @@ class Database:
         self.cursor = self.connection.cursor()
     
     def execute(
+        self,
         query: str,
-        binds: list,
-        fetch: bool = False,
-        commit: bool = True
-    ) -> list:
+        binds: list
+    ) -> None:
         self.cursor.execute(query, binds)
+        
+    def commit(self) -> None:
+        self.connection.commit()
+        
+    def fetchall(self) -> list:
         return self.cursor.fetchall()
-        # def execute(self, query, bindings, should_fetch, should_commit=False):
-        #     self.cursor.execute(query, bindings)
-            
-        #     if should_commit:
-        #         self.connection.commit()
-                
-        #     if should_fetch:
-        #         return self.cursor.fetchall()
