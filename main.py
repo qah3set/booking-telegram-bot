@@ -21,6 +21,10 @@ WELCOME_OPTIONS = [
     Markup.Price.value,
     Markup.Schedule.value
 ]
+YES_NO_OPTIONS = [
+    Markup.Yes.value,
+    Markup.No.value
+]
 
 token = Token().get()
 bot = telebot.TeleBot(token)
@@ -102,10 +106,7 @@ def menu(message) -> None:
         )
         
         markup = ReplyKeyboardMarkup(resize_keyboard = True)
-        markup.add(
-            Markup.Yes.value,
-            Markup.No.value
-        )
+        markup.add(*YES_NO_OPTIONS)
         bot.send_message(
             message.chat.id, 
             'Желаете записаться?', 
@@ -129,12 +130,9 @@ def menu(message) -> None:
         bot.register_next_step_handler(message, service_choose)
         
 def make_appointment(message: list) -> None:
-    if message.text not in [Markup.Yes.value, Markup.No.value]:
+    if message.text not in YES_NO_OPTIONS:
         markup = ReplyKeyboardMarkup(resize_keyboard = True)
-        markup.add(
-            Markup.Yes.value,
-            Markup.No.value
-        )
+        markup.add(*YES_NO_OPTIONS)
         bot.send_message(
             message.chat.id, 
             Text.InvalidInput.value, reply_markup = markup
@@ -234,9 +232,8 @@ def day_choose(message: list) -> None:
 def validate_booking(message: list) -> None:
     # TODO: validate chosen time
     # TODO: validate all chosen user data and ask a question
-    options = [Markup.Yes.value, Markup.No.value]
     markup = ReplyKeyboardMarkup(resize_keyboard = True)
-    markup.add(*options)
+    markup.add(*YES_NO_OPTIONS)
     
     chosen_data = [
         'Услуга: перманент',
