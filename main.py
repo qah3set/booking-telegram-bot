@@ -6,7 +6,25 @@ from src.template.Month import Month
 from src.template.Service import Service
 from src.template.Smile import Smile
 from src.template.Admin import Admin
+from src.template.Text import Text
 
+SERVICE_NUMBERS = [
+    Smile.NumberOne.value,
+    Smile.NumberTwo.value,
+    Smile.NumberThree.value,
+    Smile.NumberFour.value,
+    Smile.NumberFive.value,
+    Smile.NumberSix.value,
+    Smile.NumberSeven.value
+]
+WELCOME_OPTIONS = [
+    Markup.Price.value,
+    Markup.Schedule.value
+]
+YES_NO_OPTIONS = [
+    Markup.Yes.value,
+    Markup.No.value
+]
 
 token = Token().get()
 bot = telebot.TeleBot(token)
@@ -16,7 +34,7 @@ def enter_admin_dashboard(message: list) -> None:
     if message.from_user.id not in [admin.value for admin in Admin]:
         message = bot.send_message(
             message.chat.id,
-            'У вас не хватает прав для выполнения данной команды'
+            Text.PermissionDenied.value
         )
         return
 
@@ -38,10 +56,7 @@ def welcome(message: list) -> None:
 def welcome_with_instagram(message: list) -> None:
     username = message.from_user.first_name
     markup = ReplyKeyboardMarkup(resize_keyboard = True)
-    markup.add(
-        KeyboardButton(Markup.Price.value),
-        KeyboardButton(Markup.Schedule.value)
-    )
+    markup.add(*WELCOME_OPTIONS)
     message = bot.send_message(
         message.chat.id,
         'Привет, %s! Что хотите сделать?' % (username,),
@@ -52,10 +67,7 @@ def welcome_with_instagram(message: list) -> None:
 def instagram_account(message: list) -> None:
     # TODO: make validation for english characters
     markup = ReplyKeyboardMarkup(resize_keyboard = True)
-    markup.add(
-        KeyboardButton(Markup.Price.value),
-        KeyboardButton(Markup.Schedule.value)
-    )
+    markup.add(*WELCOME_OPTIONS)
     
     bot.send_message(
         message.chat.id, 
@@ -69,19 +81,14 @@ def menu(message) -> None:
         welcome(message)
         return
     
-    if message.text not in [
-        Markup.Price.value,
-        Markup.Schedule.value
-    ]:    
+    if message.text not in WELCOME_OPTIONS:    
         markup = ReplyKeyboardMarkup(resize_keyboard = True)
-        markup.add(
-            KeyboardButton(Markup.Price.value),
-            KeyboardButton(Markup.Schedule.value)
-        )
+        markup.add(*WELCOME_OPTIONS)
         
         bot.send_message(
             message.chat.id, 
-            'Недопустимый ввод, выберите, пожалуйста, вариант из списка', reply_markup = markup
+            Text.InvalidInput.value,
+            reply_markup = markup
         )
         bot.register_next_step_handler(message, menu)
         return
@@ -99,10 +106,7 @@ def menu(message) -> None:
         )
         
         markup = ReplyKeyboardMarkup(resize_keyboard = True)
-        markup.add(
-            'Да',
-            'Нет'
-        )
+        markup.add(*YES_NO_OPTIONS)
         bot.send_message(
             message.chat.id, 
             'Желаете записаться?', 
@@ -113,62 +117,39 @@ def menu(message) -> None:
     else:
         services = [service.value['name'] for service in Service]
         # TODO: refactor with array_diff
-        beaufied_numbers = [
-            Smile.NumberOne.value,
-            Smile.NumberTwo.value,
-            Smile.NumberThree.value,
-            Smile.NumberFour.value,
-            Smile.NumberFive.value,
-            Smile.NumberSix.value,
-            Smile.NumberSeven.value
-        ]
-        text = [beaufied_numbers[i] + ' ' + service for i, service in enumerate(services)]
+        text = [SERVICE_NUMBERS[i] + ' ' + service for i, service in enumerate(services)]
         markup = ReplyKeyboardMarkup(resize_keyboard = True)
-        markup.add(*beaufied_numbers)
+        markup.add(*SERVICE_NUMBERS)
             
         bot.send_message(
             message.chat.id, 
-            'Выберите номер услуги из списка\n' + \
-                '\n'.join(text),
+            Text.ChooseSeviceNumber.value + '\n' + '\n'.join(text),
             reply_markup = markup
         )
         
         bot.register_next_step_handler(message, service_choose)
         
 def make_appointment(message: list) -> None:
-    if message.text not in ['Да', 'Нет']:
+    if message.text not in YES_NO_OPTIONS:
         markup = ReplyKeyboardMarkup(resize_keyboard = True)
-        markup.add(
-            'Да',
-            'Нет'
-        )
+        markup.add(*YES_NO_OPTIONS)
         bot.send_message(
             message.chat.id, 
-            'Недопустимый ввод, выберите, пожалуйста, вариант из списка', reply_markup = markup
+            Text.InvalidInput.value, reply_markup = markup
         )
         bot.register_next_step_handler(message, make_appointment)
         return
         
-    if message.text.lower() == 'да':
+    if message.text == Markup.Yes.value:
         services = [service.value['name'] for service in Service]
         # TODO: refactor with array_diff
-        beaufied_numbers = [
-            Smile.NumberOne.value,
-            Smile.NumberTwo.value,
-            Smile.NumberThree.value,
-            Smile.NumberFour.value,
-            Smile.NumberFive.value,
-            Smile.NumberSix.value,
-            Smile.NumberSeven.value
-        ]
-        text = [beaufied_numbers[i] + ' ' + service for i, service in enumerate(services)]
+        text = [SERVICE_NUMBERS[i] + ' ' + service for i, service in enumerate(services)]
         markup = ReplyKeyboardMarkup(resize_keyboard = True)
-        markup.add(*beaufied_numbers)
+        markup.add(*SERVICE_NUMBERS)
             
         bot.send_message(
             message.chat.id, 
-            'Выберите номер услуги из списка\n' + \
-                '\n'.join(text),
+            Text.ChooseSeviceNumber.value + '\n' + '\n'.join(text),
             reply_markup = markup
         )
         
@@ -177,34 +158,16 @@ def make_appointment(message: list) -> None:
         welcome_with_instagram(message)
         
 def service_choose(message: list) -> None:
-    if message.text not in [
-        Smile.NumberOne.value,
-        Smile.NumberTwo.value,
-        Smile.NumberThree.value,
-        Smile.NumberFour.value,
-        Smile.NumberFive.value,
-        Smile.NumberSix.value,
-        Smile.NumberSeven.value
-    ]:
+    if message.text not in SERVICE_NUMBERS:
         services = [service.value['name'] for service in Service]
         # TODO: refactor with array_diff
-        beaufied_numbers = [
-            Smile.NumberOne.value,
-            Smile.NumberTwo.value,
-            Smile.NumberThree.value,
-            Smile.NumberFour.value,
-            Smile.NumberFive.value,
-            Smile.NumberSix.value,
-            Smile.NumberSeven.value
-        ]
-        text = [beaufied_numbers[i] + ' ' + service for i, service in enumerate(services)]
+        text = [SERVICE_NUMBERS[i] + ' ' + service for i, service in enumerate(services)]
         markup = ReplyKeyboardMarkup(resize_keyboard = True)
-        markup.add(*beaufied_numbers)
+        markup.add(*SERVICE_NUMBERS)
             
         bot.send_message(
             message.chat.id, 
-            'Выберите номер услуги из списка\n' + \
-                '\n'.join(text),
+            Text.ChooseSeviceNumber.value + '\n' + '\n'.join(text),
             reply_markup = markup
         )
         
@@ -218,7 +181,7 @@ def service_choose(message: list) -> None:
     )
     bot.send_message(
         message.chat.id, 
-        'Выберите месяц для записи', 
+        Text.ChooseMonth.value, 
         reply_markup = markup
     )
     bot.register_next_step_handler(message, month_choose)
@@ -235,7 +198,8 @@ def month_choose(message: list) -> None:
         )
         bot.send_message(
             message.chat.id, 
-            'Недопустимый ввод, выберите, пожалуйста, вариант из списка', reply_markup = markup
+            Text.InvalidInput.value, 
+            reply_markup = markup
         )
         bot.register_next_step_handler(message, month_choose)
         return
@@ -247,7 +211,7 @@ def month_choose(message: list) -> None:
         
     bot.send_message(
         message.chat.id, 
-        'Выберите удобный для вас день', 
+        Text.ChooseDay.value, 
         reply_markup = markup
     )
     bot.register_next_step_handler(message, day_choose)
@@ -260,7 +224,7 @@ def day_choose(message: list) -> None:
         
     bot.send_message(
         message.chat.id, 
-        'Выберите удобное время', 
+        Text.ChooseTime.value, 
         reply_markup = markup
     )
     bot.register_next_step_handler(message, validate_booking)
@@ -268,9 +232,8 @@ def day_choose(message: list) -> None:
 def validate_booking(message: list) -> None:
     # TODO: validate chosen time
     # TODO: validate all chosen user data and ask a question
-    options = ['Да', 'Нет']
     markup = ReplyKeyboardMarkup(resize_keyboard = True)
-    markup.add(*options)
+    markup.add(*YES_NO_OPTIONS)
     
     chosen_data = [
         'Услуга: перманент',
@@ -289,7 +252,7 @@ def booking_success(message: list) -> None:
     # TODO: validate no answer
     bot.send_message(
         message.chat.id,
-        'Запись сохранена, ожидайте, за 24ч до сеанса с Вами свяжутся для подтверждения.'
+        Text.BookingSuccess.value
     )
     welcome_with_instagram(message)
 

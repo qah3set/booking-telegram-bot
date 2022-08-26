@@ -7,10 +7,9 @@ CREATE TABLE users (
     instagram_nickname VARCHAR,
     created_at TIMESTAMP NOT NULL,
     telegram_id INTEGER NOT NULL,
-    first_name VARCHAR NOTNULL,
+    first_name VARCHAR NOT NULL,
     last_name VARCHAR,
-    username VARCHAR NOT NULL,
-    is_admin BOOLEAN NOT NULL DEFAULT false
+    username VARCHAR
 );
 
 CREATE TABLE bookings (
