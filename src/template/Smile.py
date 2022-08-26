@@ -4,6 +4,12 @@ import enum
 class Smile(enum.Enum):
     Money = u"💵"
     Clock = u"🕐"
+    Yes = u"✅"
+    No = u"❌"
+    Add = u"➕"
+    Delete = u"🗑" 
+    Edit = u"✍🏼"
+    View = u"🗂"
     ArrowBottom = u"⬇️"
     ArrowLeft = u"⬅️"
     NumberOne = u"1️⃣"
