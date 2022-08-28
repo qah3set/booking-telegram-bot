@@ -17,6 +17,7 @@ SERVICE_NUMBERS = [
     Smile.NumberSix.value,
     Smile.NumberSeven.value
 ]
+
 WELCOME_OPTIONS = [
     Markup.Price.value,
     Markup.Schedule.value,
@@ -28,7 +29,6 @@ ADMIN_OPTIONS = [
     Markup.Edit.value,
     Markup.View.value
 ]
-
 
 YES_NO_OPTIONS = [
     Markup.Yes.value,
@@ -50,8 +50,22 @@ def enter_admin_dashboard(message: list) -> None:
         username = message.from_user.first_name
         markup = ReplyKeyboardMarkup(resize_keyboard = True)
         markup.add(*ADMIN_OPTIONS)
-        message = bot.send_message(message.chat.id, 'Привет, %s! Вы вошли в панель администратора.' % (username,), reply_markup = markup)
+        bot.send_message(
+            message.chat.id, 
+            'Привет, %s! Вы вошли в панель администратора' % (username,), 
+            reply_markup = markup
+        )
+        bot.register_next_step_handler(message, add)
 
+def add(message: list) -> None:
+        if message.text == 'Добавить➕':
+            welcome(message)
+        elif message.text == 'Удалить🗑':
+            bot.send_message(message.chat.id, 'Загллушка удалить')
+        elif message.text == 'Редактировать✍🏼':
+            bot.send_message(message.chat.id, 'Заглушка редактировать')
+        elif message.text == 'Просмотреть🗂':
+            bot.send_message(message.chat.id, 'Заглушка посмотреть')
 
 @bot.message_handler(commands=['start'])
 def welcome(message: list) -> None:
