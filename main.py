@@ -22,12 +22,12 @@ WELCOME_OPTIONS = [
     Markup.Schedule.value,
 ]
 
-# ADMIN_OPTIONS = [
-#     Markup.Add.value,
-#     Markup.Delete.value,
-#     Markup.Edit.value,
-#     Markup.View.value
-# ]
+ADMIN_OPTIONS = [
+    Markup.Add.value,
+    Markup.Delete.value,
+    Markup.Edit.value,
+    Markup.View.value
+]
 
 
 YES_NO_OPTIONS = [
@@ -38,28 +38,19 @@ YES_NO_OPTIONS = [
 token = Token().get()
 bot = telebot.TeleBot(token)
 
-# @bot.message_handler(commands=['admin'])
-# def enter_admin_dashboard(message: list) -> None:
-#     if message.from_user.id not in [admin.value for admin in Admin]:
-#         message = bot.send_message(
-#             message.chat.id,
-#             Text.PermissionDenied.value
-#         )
-#         return
-
-#     bot.register_next_step_handler(message, admin_panel)
-#     message = bot.send_message(message.chat.id, 'Привет админ')
-
-# def admin_panel(message: list) -> None:
-#     username = message.from_user.first_name
-#     markup = ReplyKeyboardMarkup(resize_keyboard = True)
-#     markup.add(*ADMIN_OPTIONS)
-#     message = bot.send_message(
-#         message.chat.id,
-#         'Привет, %s! Что хотите сделать?' % (username,),
-#         reply_markup = markup
-#     )
-#     bot.register_next_step_handler(message, instagram_account)
+@bot.message_handler(commands=['admin'])
+def enter_admin_dashboard(message: list) -> None:
+    if message.from_user.id not in [admin.value for admin in Admin]:
+        message = bot.send_message(
+            message.chat.id,
+            Text.PermissionDenied.value
+        )
+        return
+    else:
+        username = message.from_user.first_name
+        markup = ReplyKeyboardMarkup(resize_keyboard = True)
+        markup.add(*ADMIN_OPTIONS)
+        message = bot.send_message(message.chat.id, 'Привет, %s! Вы вошли в панель администратора.' % (username,), reply_markup = markup)
 
 
 @bot.message_handler(commands=['start'])
