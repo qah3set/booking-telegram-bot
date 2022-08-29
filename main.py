@@ -46,25 +46,25 @@ def enter_admin_dashboard(message: list) -> None:
             Text.PermissionDenied.value
         )
         return
-    else:
-        username = message.from_user.first_name
-        markup = ReplyKeyboardMarkup(resize_keyboard = True)
-        markup.add(*ADMIN_OPTIONS)
-        bot.send_message(
-            message.chat.id, 
-            'Привет, %s! Вы вошли в панель администратора' % (username,), 
-            reply_markup = markup
+    
+    username = message.from_user.first_name
+    markup = ReplyKeyboardMarkup(resize_keyboard = True)
+    markup.add(*ADMIN_OPTIONS)
+    bot.send_message(
+    message.chat.id, 
+        'Привет, %s! Вы вошли в панель администратора' % (username,), 
+        reply_markup = markup
         )
-        bot.register_next_step_handler(message, add)
+    bot.register_next_step_handler(message, add)
 
 def add(message: list) -> None:
-        if message.text == 'Добавить➕':
+        if message.text == Markup.Add.value:
             welcome(message)
-        elif message.text == 'Удалить🗑':
+        elif message.text == Markup.Delete.value:
             bot.send_message(message.chat.id, 'Загллушка удалить')
-        elif message.text == 'Редактировать✍🏼':
+        elif message.text == Markup.Edit.value:
             bot.send_message(message.chat.id, 'Заглушка редактировать')
-        elif message.text == 'Просмотреть🗂':
+        elif message.text == Markup.View.value:
             bot.send_message(message.chat.id, 'Заглушка посмотреть')
 
 @bot.message_handler(commands=['start'])
